@@ -56,7 +56,7 @@ const VideoScreen = props => {
   const [state, setState] = useState({
     info: 'Initializing',
     status: 'init',
-    roomID: '',
+    roomID: 1234,
     isFront: true,
     selfViewSrc: null,
     selfViewSrcKey: null,
@@ -89,7 +89,7 @@ const VideoScreen = props => {
               request: 'join',
               room: roomId,
               ptype: 'publisher',
-              display: myusername,
+              display: 'default',
             };
             sfutest.send({message: register});
           },
@@ -105,7 +105,7 @@ const VideoScreen = props => {
             if (event != undefined && event != null) {
               if (event === 'joined') {
                 myid = msg['id'];
-                this.publishOwnFeed(true);
+                publishOwnFeed(true);
                 setState(s => ({...s, visible: false}));
                 if (
                   msg['publishers'] !== undefined &&
@@ -115,7 +115,7 @@ const VideoScreen = props => {
                   for (var f in list) {
                     var id = list[f]['id'];
                     var display = list[f]['display'];
-                    this.newRemoteFeed(id, display);
+                    newRemoteFeed(id, display);
                   }
                 }
               } else if (event === 'destroyed') {
@@ -125,10 +125,11 @@ const VideoScreen = props => {
                   msg['publishers'] !== null
                 ) {
                   var list = msg['publishers'];
+                  console.log('List',list)
                   for (var f in list) {
                     let id = list[f]['id'];
                     let display = list[f]['display'];
-                    this.newRemoteFeed(id, display);
+                    newRemoteFeed(id, display);
                   }
                 } else if (
                   msg['leaving'] !== undefined &&
@@ -171,6 +172,7 @@ const VideoScreen = props => {
             }
           },
           onlocalstream: stream => {
+            console.log('localStream',stream)
             setState(s => ({
               ...s,
               selfViewSrc: stream.toURL(),
@@ -179,7 +181,9 @@ const VideoScreen = props => {
               info: 'Please enter or create room ID',
             }));
           },
-          onremotestream: stream => {},
+          onremotestream: stream => {
+            console.log('streamR',stream)
+          },
           oncleanup: () => {
             mystream = null;
           },
@@ -193,6 +197,7 @@ const VideoScreen = props => {
         setState(s => ({...s, publish: false}));
       },
     });
+    console.log('state',state)
   }
 
   function switchVideoType() {
@@ -333,6 +338,7 @@ const VideoScreen = props => {
 
   return (
     <View style={styles.contianer}>
+      <Text>{JSON.stringify(state)}</Text>
       <Text>Video {route?.params?.myusername}</Text>
       <ScrollView>
         <View style={styles.container}>

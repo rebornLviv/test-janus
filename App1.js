@@ -38,7 +38,7 @@ const dimensions = Dimensions.get('window');
 
 let host = '192.168.30.162';
 let server = 'http://' + host + ':8088/janus';
-const wsServer = 'ws://192.168.1.5:8188/';
+const wsServer = 'http://video.redentu.com:8088/janus';
 // let backHost = 'http://' + host + ':3000/stream';
 
 let started = false
@@ -335,6 +335,9 @@ export default class JanusReactNative extends Component {
             <Text style={styles.buttonText}>End streaming</Text>
           </View>
         </TouchableOpacity>
+        <Button title="go screens" onPress={ ()=>{
+          this.props.navigation.navigate('Video')
+        }} />
         <TouchableOpacity onPress={this.switchVideoType} underlayColor="white">
           <View style={styles.button}>
             <Text style={styles.buttonText}>Switch camera</Text>

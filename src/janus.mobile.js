@@ -5,6 +5,7 @@ import {
   RTCSessionDescription,
   RTCView,
   MediaStreamTrack,
+  mediaDevices,
   getUserMedia,
 } from 'react-native-webrtc';
 
@@ -1924,27 +1925,25 @@ function Janus(gatewayCallbacks) {
       // If we got here, we're not screensharing
       if (media === null || media === undefined || media.video !== 'screen') {
         // Check whether all media sources are actually available or not
-
-        MediaStreamTrack.getSources(sourceInfos => {
-          console.log(sourceInfos);
-          getUserMedia(
-            {
+        // MediaStreamTrack
+        console.log('Media',media)
+    
+        mediaDevices.enumerateDevices().then(devices => {
+          console.log(devices);
+          mediaDevices.getUserMedia({
               audio: true,
               video: {
-                facingMode: true ? 'user' : 'environment',
-              },
-            },
-            stream => {
+                  facingMode: (false ? "user" : "environment"),
+              }
+          }).then(stream => {
               localStream = stream;
-              console.log('Succeeded to get the local camera!');
+              console.log("Succeeded to get the local camera!");
               streamsDone(handleId, jsep, media, callbacks, stream);
-            },
-            error => {
-              console.log('Failed to get the local camera!');
+          }).catch(error => {
+              console.log("Failed to get the local camera!");
               console.log(error);
-            },
-          );
-        });
+          })
+      })
       }
     } else {
       // No need to do a getUserMedia, create offer/answer right away
